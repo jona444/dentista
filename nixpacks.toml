@@ -1,0 +1,19 @@
+[phases.setup]
+nixPkgs = ["php81", "php81Extensions.pdo", "php81Extensions.pdo_mysql", "php81Extensions.mbstring", "php81Extensions.xml", "php81Extensions.tokenizer", "php81Extensions.ctype", "php81Extensions.fileinfo", "php81Extensions.bcmath", "php81Extensions.curl", "nodejs_20", "nodePackages.npm"]
+
+[phases.install]
+cmds = [
+    "composer install --no-dev --optimize-autoloader",
+    "npm install",
+    "npm run build"
+]
+
+[phases.build]
+cmds = [
+    "php artisan config:cache",
+    "php artisan route:cache",
+    "php artisan view:cache"
+]
+
+[start]
+cmd = "php artisan migrate --force && php artisan db:seed --force && php -S 0.0.0.0:$PORT -t public"
